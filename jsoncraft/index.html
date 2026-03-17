@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSONCraft — Free Online JSON Editor, Formatter & Validator</title>
+    <meta name="description" content="Free online JSON editor with tree view, formatter, validator, minifier, and converter. Edit, format, and fix JSON instantly in your browser. No sign-up needed.">
+    <meta name="keywords" content="json editor, json formatter, json validator, json beautifier, json minifier, json to csv, json viewer, json tree, json parser, online json editor, edit json online, json tool">
+    <meta name="author" content="JSONCraft">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+    <link rel="canonical" href="https://jsoncraft.dev/">
+    <meta property="og:title" content="JSONCraft — Free Online JSON Editor & Formatter">
+    <meta property="og:description" content="Edit, format, validate, and convert JSON data instantly. Tree view, syntax highlighting, error detection. 100% free.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jsoncraft.dev/">
+    <meta property="og:image" content="https://jsoncraft.dev/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="JSONCraft — Free Online JSON Editor">
+    <meta name="twitter:description" content="Edit, format, validate, and convert JSON instantly. Free forever.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- ============================================================ -->
+    <!-- ADSENSE: Paste your AdSense head snippet below               -->
+    <!-- Get it from: https://www.google.com/adsense → Sites → Code  -->
+    <!-- ============================================================ -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+    <style>
+        /* ═══════════════════════════════════════════════════════════ */
+        /* DESIGN SYSTEM — "Terminal Elegance"                        */
+        /* Dark IDE aesthetic with warm amber accents                  */
+        /* ═══════════════════════════════════════════════════════════ */
+        :root {
+            --bg-0: #08080c;
+            --bg-1: #0d0d14;
+            --bg-2: #13131e;
+            --bg-3: #1a1a28;
+            --bg-4: #222236;
+            --surface: #161624;
+            --border: #1e1e32;
+            --border-hover: #2d2d48;
+            --border-focus: #e8a838;
+
+            --text-0: #f2ece0;
+            --text-1: #c8c2b6;
+            --text-2: #8a8578;
+            --text-3: #5a564c;
+
+            --amber: #e8a838;
+            --amber-dim: rgba(232, 168, 56, 0.12);
+            --amber-glow: rgba(232, 168, 56, 0.25);
+            --green: #34d399;
+            --green-dim: rgba(52, 211, 153, 0.1);
+            --red: #f87171;
+            --red-dim: rgba(248, 113, 113, 0.1);
+            --blue: #60a5fa;
+            --purple: #a78bfa;
+            --cyan: #22d3ee;
+
+            --font-sans: 'DM Sans', -apple-system, sans-serif;
+            --font-mono: 'IBM Plex Mono', 'Fira Code', monospace;
+            --radius: 10px;
+            --radius-sm: 6px;
+            --radius-lg: 14px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+            --transition: 0.2s ease;
+        }
+
+        /* ── Light Theme ─────────────────────────── */
+        [data-theme="light"] {
+            --bg-0: #f5f3ee;
+            --bg-1: #faf9f6;
+            --bg-2: #ffffff;
+            --bg-3: #f0ede6;
+            --bg-4: #e8e4dc;
+            --surface: #ffffff;
+            --border: #e0dcd4;
+            --border-hover: #ccc8be;
+            --border-focus: #c48a18;
+
+            --text-0: #1a1814;
+            --text-1: #3a3830;
+            --text-2: #7a7668;
+            --text-3: #aaa698;
+
+            --amber: #c48a18;
+            --amber-dim: rgba(196, 138, 24, 0.08);
+            --amber-glow: rgba(196, 138, 24, 0.15);
+            --green: #16a34a;
+            --green-dim: rgba(22, 163, 74, 0.07);
+            --red: #dc2626;
+            --red-dim: rgba(220, 38, 38, 0.06);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,0.1);
+        }
+
+        /* ── Reset & Base ────────────────────────── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-0);
+            color: var(--text-0);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            transition: background var(--transition), color var(--transition);
+        }
+        ::selection { background: var(--amber-glow); color: var(--text-0); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 3px; }
+
+        /* ── Layout ──────────────────────────────── */
+        .container { max-width: 1380px; margin: 0 auto; padding: 0 20px; }
+
+        /* ══════════════════════════════════════════ */
+        /* AD SLOTS                                   */
+        /* ══════════════════════════════════════════ */
+        .ad-slot {
+            width: 100%;
+            margin: 0 auto;
+            min-height: 90px;
+            background: var(--bg-2);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-3);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            overflow: hidden;
+        }
+        .ad-leaderboard { max-width: 728px; min-height: 90px; }
+        .ad-rectangle { max-width: 336px; min-height: 280px; }
+        .ad-skyscraper { width: 160px; min-height: 600px; }
+        .ad-responsive { max-width: 100%; min-height: 100px; }
+        .ad-wrapper { display: flex; justify-content: center; padding: 12px 0; }
+        .ad-wrapper-sidebar { position: sticky; top: 20px; }
+
+        /* ══════════════════════════════════════════ */
+        /* HEADER                                     */
+        /* ══════════════════════════════════════════ */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 8, 12, 0.85);
+            backdrop-filter: blur(16px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            transition: background var(--transition);
+        }
+        [data-theme="light"] .header {
+            background: rgba(250, 249, 246, 0.85);
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            max-width: 1380px;
+            margin: 0 auto;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .logo-mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--amber), #d4740a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 13px;
+            color: #0a0a0a;
+            box-shadow: 0 2px 12px var(--amber-glow);
+        }
+        .logo-name {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-0);
+            letter-spacing: -0.02em;
+        }
+        .logo-name span { color: var(--amber); }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-link {
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            color: var(--text-2);
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: all var(--transition);
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: var(--font-sans);
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-0);
+            background: var(--amber-dim);
+        }
+        .theme-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-2);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+            margin-left: 8px;
+        }
+        .theme-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+        .mobile-menu-btn {
+            display: none;
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-1);
+            cursor: pointer;
+            font-size: 1.2rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ══════════════════════════════════════════ */
+        /* TOOLBAR                                    */
+        /* ══════════════════════════════════════════ */
+        .toolbar {
+            background: var(--bg-1);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 0;
+        }
+        .toolbar-inner {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-wrap: wrap;
+        }
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .tool-sep {
+            width: 1px;
+            height: 24px;
+            background: var(--border);
+            margin: 0 8px;
+        }
+        .btn {
+            font-family: var(--font-sans);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--bg-2);
+            color: var(--text-1);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            line-height: 1;
+        }
+        .btn:hover { border-color: var(--amber); color: var(--text-0); background: var(--bg-3); }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary {
+            background: var(--amber);
+            border-color: var(--amber);
+            color: #0a0a0a;
+            font-weight: 700;
+        }
+        .btn-primary:hover { background: #f0b848; border-color: #f0b848; color: #0a0a0a; }
+        .btn-sm { padding: 5px 10px; font-size: 0.72rem; }
+        .btn-icon { font-size: 0.95rem; line-height: 1; }
+
+        .toolbar-spacer { flex: 1; }
+
+        .select-tool {
+            font-family: var(--font-sans);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 7px 10px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--bg-2);
+            color: var(--text-1);
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        /* ══════════════════════════════════════════ */
+        /* MAIN EDITOR LAYOUT                         */
+        /* ══════════════════════════════════════════ */
+        .editor-layout {
+            display: grid;
+            grid-template-columns: 1fr 160px;
+            gap: 0;
+            min-height: calc(100vh - 200px);
+        }
+        .editor-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 0;
+        }
+
+        /* ── Editor Panel ────────────────────────── */
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            min-height: 0;
+        }
+        .editor-panel:last-child { border-right: none; }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: var(--bg-2);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .panel-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-3);
+        }
+        .panel-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-pill {
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: none;
+            letter-spacing: 0.04em;
+        }
+        .status-pill.valid {
+            display: inline-flex;
+            background: var(--green-dim);
+            color: var(--green);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+        .status-pill.invalid {
+            display: inline-flex;
+            background: var(--red-dim);
+            color: var(--red);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        /* ── Textarea ────────────────────────────── */
+        .code-area {
+            flex: 1;
+            width: 100%;
+            padding: 16px;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            line-height: 1.7;
+            color: var(--text-0);
+            background: var(--bg-1);
+            border: none;
+            outline: none;
+            resize: none;
+            tab-size: 2;
+            overflow: auto;
+        }
+        .code-area::placeholder { color: var(--text-3); }
+        .code-area:focus { background: var(--bg-0); }
+
+        .panel-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 14px;
+            background: var(--bg-2);
+            border-top: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text-3);
+            flex-shrink: 0;
+        }
+
+        /* ── Tree View ───────────────────────────── */
+        .tree-container {
+            flex: 1;
+            overflow: auto;
+            padding: 12px 16px;
+            background: var(--bg-1);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+        .tree-node {
+            padding: 2px 0;
+            cursor: default;
+        }
+        .tree-key {
+            color: var(--purple);
+            font-weight: 500;
+        }
+        .tree-string { color: var(--green); }
+        .tree-number { color: var(--cyan); }
+        .tree-boolean { color: var(--amber); }
+        .tree-null { color: var(--text-3); font-style: italic; }
+        .tree-bracket { color: var(--text-3); }
+        .tree-toggle {
+            cursor: pointer;
+            user-select: none;
+            display: inline-block;
+            width: 16px;
+            color: var(--text-3);
+            transition: transform var(--transition);
+        }
+        .tree-toggle:hover { color: var(--amber); }
+        .tree-children {
+            margin-left: 20px;
+            border-left: 1px solid var(--border);
+            padding-left: 8px;
+        }
+        .tree-collapsed { display: none; }
+
+        /* ── Error Bar ───────────────────────────── */
+        .error-bar {
+            display: none;
+            padding: 10px 16px;
+            background: var(--red-dim);
+            border-top: 1px solid rgba(248, 113, 113, 0.2);
+            color: var(--red);
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            line-height: 1.5;
+            animation: slideDown 0.2s ease;
+        }
+        .error-bar.show { display: flex; align-items: center; gap: 8px; }
+        .error-bar .error-icon { flex-shrink: 0; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Sidebar Ads ─────────────────────────── */
+        .sidebar-ads {
+            background: var(--bg-1);
+            border-left: 1px solid var(--border);
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* ══════════════════════════════════════════ */
+        /* TABS (Code / Tree / Diff views)            */
+        /* ══════════════════════════════════════════ */
+        .view-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-2);
+        }
+        .view-tab {
+            padding: 8px 16px;
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-3);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .view-tab:hover { color: var(--text-1); }
+        .view-tab.active {
+            color: var(--amber);
+            border-bottom-color: var(--amber);
+            background: var(--amber-dim);
+        }
+
+        /* ══════════════════════════════════════════ */
+        /* SEO CONTENT SECTION                        */
+        /* ══════════════════════════════════════════ */
+        .content-section {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 48px 20px 64px;
+        }
+        .content-section h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-0);
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+        .content-section h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-0);
+            margin: 24px 0 8px;
+        }
+        .content-section p {
+            color: var(--text-2);
+            font-size: 0.92rem;
+            line-height: 1.75;
+            margin-bottom: 12px;
+        }
+        .content-section a {
+            color: var(--amber);
+            text-decoration: none;
+        }
+        .content-section a:hover { text-decoration: underline; }
+
+        /* ── Feature Grid ────────────────────────── */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin: 28px 0 40px;
+        }
+        .feature-card {
+            padding: 20px;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: border-color var(--transition), transform var(--transition);
+        }
+        .feature-card:hover { border-color: var(--amber); transform: translateY(-2px); }
+        .feature-card .f-icon { font-size: 1.6rem; margin-bottom: 10px; display: block; }
+        .feature-card h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 4px; color: var(--text-0); }
+        .feature-card p { font-size: 0.82rem; color: var(--text-2); line-height: 1.55; margin: 0; }
+
+        /* ── FAQ ──────────────────────────────────── */
+        .faq { margin: 32px 0; }
+        .faq-item {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+            overflow: hidden;
+            background: var(--bg-2);
+        }
+        .faq-item summary {
+            padding: 14px 18px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-0);
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background var(--transition);
+        }
+        .faq-item summary:hover { background: var(--amber-dim); }
+        .faq-item summary::after {
+            content: '+';
+            font-size: 1.2rem;
+            color: var(--amber);
+            transition: transform var(--transition);
+            font-weight: 400;
+        }
+        .faq-item[open] summary::after { transform: rotate(45deg); }
+        .faq-body {
+            padding: 0 18px 16px;
+            color: var(--text-2);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        /* ══════════════════════════════════════════ */
+        /* FOOTER                                     */
+        /* ══════════════════════════════════════════ */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 20px;
+            text-align: center;
+        }
+        .footer-inner {
+            max-width: 860px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .footer-copy { color: var(--text-3); font-size: 0.78rem; }
+        .footer-links { display: flex; gap: 16px; }
+        .footer-links a {
+            color: var(--text-3);
+            font-size: 0.78rem;
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+        .footer-links a:hover { color: var(--amber); }
+
+        /* ══════════════════════════════════════════ */
+        /* TOAST                                      */
+        /* ══════════════════════════════════════════ */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(60px);
+            background: var(--surface);
+            border: 1px solid var(--amber);
+            color: var(--text-0);
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            font-size: 0.82rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* ── Pages (Privacy / About) ─────────────── */
+        .page-content {
+            display: none;
+            max-width: 720px;
+            margin: 40px auto;
+            padding: 0 20px 60px;
+        }
+        .page-content.active { display: block; }
+        .page-content h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .page-content h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 24px 0 8px;
+            color: var(--text-0);
+        }
+        .page-content p, .page-content li {
+            color: var(--text-2);
+            font-size: 0.9rem;
+            line-height: 1.75;
+            margin-bottom: 10px;
+        }
+        .page-content ul { padding-left: 20px; }
+
+        /* ══════════════════════════════════════════ */
+        /* RESPONSIVE                                 */
+        /* ══════════════════════════════════════════ */
+        @media (max-width: 1024px) {
+            .editor-layout { grid-template-columns: 1fr; }
+            .sidebar-ads { display: none; }
+        }
+        @media (max-width: 768px) {
+            .editor-main { grid-template-columns: 1fr; }
+            .editor-panel { min-height: 300px; border-right: none; border-bottom: 1px solid var(--border); }
+            .header-nav .nav-link:not(.theme-btn) { display: none; }
+            .mobile-menu-btn { display: flex; }
+            .toolbar-inner { gap: 4px; }
+            .btn { padding: 6px 10px; font-size: 0.72rem; }
+            .content-section { padding: 32px 16px 48px; }
+        }
+        @media (max-width: 480px) {
+            .toolbar-inner { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 8px; }
+            .tool-sep { display: none; }
+        }
+
+        /* ── Animations ──────────────────────────── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeInUp 0.4s ease forwards; }
+        .delay-1 { animation-delay: 0.05s; opacity: 0; }
+        .delay-2 { animation-delay: 0.1s; opacity: 0; }
+        .delay-3 { animation-delay: 0.15s; opacity: 0; }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- HEADER                                     -->
+    <!-- ══════════════════════════════════════════ -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo" onclick="showPage('editor')">
+                <div class="logo-mark">{ }</div>
+                <div class="logo-name">JSON<span>Craft</span></div>
+            </div>
+            <nav class="header-nav">
+                <a class="nav-link active" onclick="showPage('editor')" data-page="editor">Editor</a>
+                <a class="nav-link" onclick="showPage('about')" data-page="about">About</a>
+                <a class="nav-link" onclick="showPage('privacy')" data-page="privacy">Privacy</a>
+                <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- TOP AD SLOT                                -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="ad-wrapper" id="editorSection">
+        <div class="ad-slot ad-leaderboard">
+            <!-- ═══ ADSENSE SLOT 1: Leaderboard 728×90 ═══ -->
+            <!-- Replace this entire div content with your AdSense ad unit code -->
+            <!-- Example:
+            <ins class="adsbygoogle"
+                 style="display:inline-block;width:728px;height:90px"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            -->
+            Ad Space — 728×90 Leaderboard
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- TOOLBAR                                    -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="toolbar" id="mainToolbar">
+        <div class="toolbar-inner">
+            <div class="tool-group">
+                <button class="btn btn-primary" onclick="formatJSON()" title="Format / Beautify (Ctrl+Shift+F)">
+                    <span class="btn-icon">✨</span> Format
+                </button>
+                <button class="btn" onclick="minifyJSON()" title="Minify / Compress">
+                    <span class="btn-icon">📦</span> Minify
+                </button>
+                <button class="btn" onclick="validateJSON()" title="Validate syntax">
+                    <span class="btn-icon">✓</span> Validate
+                </button>
+            </div>
+
+            <div class="tool-sep"></div>
+
+            <div class="tool-group">
+                <button class="btn" onclick="sortKeys()" title="Sort keys alphabetically">
+                    <span class="btn-icon">↕</span> Sort Keys
+                </button>
+                <button class="btn" onclick="flattenJSON()" title="Flatten nested JSON">
+                    <span class="btn-icon">⊟</span> Flatten
+                </button>
+                <button class="btn" onclick="escapeJSON()" title="Escape string">
+                    <span class="btn-icon">\\</span> Escape
+                </button>
+                <button class="btn" onclick="unescapeJSON()" title="Unescape string">
+                    <span class="btn-icon">"</span> Unescape
+                </button>
+            </div>
+
+            <div class="tool-sep"></div>
+
+            <div class="tool-group">
+                <button class="btn" onclick="jsonToCSV()" title="Convert to CSV">
+                    <span class="btn-icon">📊</span> → CSV
+                </button>
+                <button class="btn" onclick="jsonToYAML()" title="Convert to YAML">
+                    <span class="btn-icon">📄</span> → YAML
+                </button>
+            </div>
+
+            <div class="tool-sep"></div>
+
+            <div class="tool-group">
+                <button class="btn" onclick="copyOutput()" title="Copy output (Ctrl+Shift+C)">
+                    <span class="btn-icon">📋</span> Copy
+                </button>
+                <button class="btn" onclick="downloadJSON()" title="Download as .json file">
+                    <span class="btn-icon">💾</span> Save
+                </button>
+                <button class="btn" onclick="clearAll()" title="Clear all">
+                    <span class="btn-icon">🗑</span> Clear
+                </button>
+            </div>
+
+            <div class="toolbar-spacer"></div>
+
+            <select class="select-tool" id="indentSize" title="Indent size" onchange="autoFormat()">
+                <option value="2">2 spaces</option>
+                <option value="4">4 spaces</option>
+                <option value="tab">Tab</option>
+                <option value="1">1 space</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- EDITOR + SIDEBAR ADS                       -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="editor-layout" id="editorLayout">
+        <div>
+            <div class="error-bar" id="errorBar">
+                <span class="error-icon">⚠</span>
+                <span id="errorText"></span>
+            </div>
+
+            <div class="editor-main">
+                <!-- INPUT PANEL -->
+                <div class="editor-panel">
+                    <div class="panel-header">
+                        <span class="panel-label">Input — Raw JSON</span>
+                        <div class="panel-actions">
+                            <span class="status-pill" id="statusPill"></span>
+                            <button class="btn btn-sm" onclick="loadSample()" title="Load sample JSON">Sample</button>
+                            <button class="btn btn-sm" onclick="handleFileUpload()" title="Upload .json file">Upload</button>
+                            <input type="file" id="fileInput" accept=".json,.txt" style="display:none" onchange="onFileSelected(event)">
+                        </div>
+                    </div>
+                    <textarea
+                        class="code-area"
+                        id="inputArea"
+                        placeholder='Paste or type your JSON here...&#10;&#10;{&#10;  "name": "JSONCraft",&#10;  "version": "1.0.0",&#10;  "features": ["format", "validate", "convert"]&#10;}'
+                        spellcheck="false"
+                        autocomplete="off"
+                    ></textarea>
+                    <div class="panel-footer">
+                        <span id="inputStats">0 chars · 0 lines · 0 bytes</span>
+                        <span>UTF-8</span>
+                    </div>
+                </div>
+
+                <!-- OUTPUT PANEL -->
+                <div class="editor-panel">
+                    <div class="view-tabs">
+                        <button class="view-tab active" data-view="code" onclick="switchView('code')">Code</button>
+                        <button class="view-tab" data-view="tree" onclick="switchView('tree')">Tree View</button>
+                    </div>
+                    <!-- Code View -->
+                    <textarea
+                        class="code-area"
+                        id="outputArea"
+                        placeholder="Formatted output appears here..."
+                        spellcheck="false"
+                        readonly
+                    ></textarea>
+                    <!-- Tree View -->
+                    <div class="tree-container" id="treeView" style="display:none;"></div>
+                    <div class="panel-footer">
+                        <span id="outputStats">0 chars · 0 lines · 0 bytes</span>
+                        <span id="parseTime"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR ADS -->
+        <div class="sidebar-ads">
+            <div class="ad-slot ad-skyscraper ad-wrapper-sidebar">
+                <!-- ═══ ADSENSE SLOT 2: Skyscraper 160×600 ═══ -->
+                <!-- Replace this with your AdSense ad unit code -->
+                Ad Space<br>160×600
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- IN-CONTENT AD                              -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="ad-wrapper">
+        <div class="ad-slot ad-responsive" style="max-width:728px;">
+            <!-- ═══ ADSENSE SLOT 3: Responsive In-Article ═══ -->
+            <!-- Replace this with your AdSense responsive ad unit code -->
+            Ad Space — Responsive In-Article
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- SEO CONTENT                                -->
+    <!-- ══════════════════════════════════════════ -->
+    <section class="content-section" id="seoContent">
+        <h2>The JSON Editor Built for Developers</h2>
+        <p>JSONCraft is a free, fast, and private online JSON editor with everything you need: formatting, validation, tree view, minification, key sorting, flattening, and conversion to CSV/YAML. All processing happens in your browser — your data never touches a server.</p>
+
+        <div class="feature-grid">
+            <div class="feature-card animate-in delay-1">
+                <span class="f-icon">⚡</span>
+                <h4>Instant Processing</h4>
+                <p>Format, validate, and convert JSON of any size in milliseconds. Pure client-side JavaScript.</p>
+            </div>
+            <div class="feature-card animate-in delay-2">
+                <span class="f-icon">🌳</span>
+                <h4>Interactive Tree View</h4>
+                <p>Explore JSON as a collapsible tree with syntax-colored values. Navigate nested structures easily.</p>
+            </div>
+            <div class="feature-card animate-in delay-3">
+                <span class="f-icon">🔒</span>
+                <h4>100% Private</h4>
+                <p>Your data stays in your browser. No server calls, no logging, no analytics on your JSON content.</p>
+            </div>
+            <div class="feature-card animate-in delay-1">
+                <span class="f-icon">🔄</span>
+                <h4>JSON → CSV / YAML</h4>
+                <p>One-click conversion to CSV for spreadsheets or YAML for configuration files.</p>
+            </div>
+            <div class="feature-card animate-in delay-2">
+                <span class="f-icon">🎯</span>
+                <h4>Error Pinpointing</h4>
+                <p>Get precise, human-readable error messages that tell you exactly what's wrong and where.</p>
+            </div>
+            <div class="feature-card animate-in delay-3">
+                <span class="f-icon">📱</span>
+                <h4>Works Everywhere</h4>
+                <p>Fully responsive — use on desktop, tablet, or phone. Keyboard shortcuts included.</p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq">
+            <details class="faq-item">
+                <summary>What is a JSON editor?</summary>
+                <div class="faq-body">A JSON editor is a tool that lets you view, edit, format, and validate JSON (JavaScript Object Notation) data. JSONCraft goes further by offering tree view, key sorting, flattening, and format conversion — all in one place.</div>
+            </details>
+            <details class="faq-item">
+                <summary>Is my data safe when using JSONCraft?</summary>
+                <div class="faq-body">Yes. All processing happens entirely in your browser using client-side JavaScript. Your JSON data is never sent to any server, never stored, and never logged. JSONCraft is 100% private by design.</div>
+            </details>
+            <details class="faq-item">
+                <summary>What's the difference between Format and Minify?</summary>
+                <div class="faq-body">Format (beautify) adds proper indentation and line breaks to make JSON human-readable. Minify removes all whitespace to create the smallest possible output — ideal for APIs, config files, and production payloads.</div>
+            </details>
+            <details class="faq-item">
+                <summary>Can I convert JSON to CSV?</summary>
+                <div class="faq-body">Yes! If your JSON is an array of objects, JSONCraft can convert it to CSV format that you can paste into Excel, Google Sheets, or save as a .csv file. Click the "→ CSV" button in the toolbar.</div>
+            </details>
+            <details class="faq-item">
+                <summary>What does "Flatten" do?</summary>
+                <div class="faq-body">Flatten takes nested JSON and converts it to a single-level object using dot notation for keys. For example, {"user": {"name": "John"}} becomes {"user.name": "John"}. Useful for data analysis and logging.</div>
+            </details>
+            <details class="faq-item">
+                <summary>Is there a file size limit?</summary>
+                <div class="faq-body">There's no hard limit since everything runs locally. Files up to ~10MB work well on most devices. Very large files may be slower but will still process. For huge files, consider using a native desktop tool.</div>
+            </details>
+            <details class="faq-item">
+                <summary>What keyboard shortcuts are available?</summary>
+                <div class="faq-body">Ctrl+Shift+F to format, Ctrl+Shift+C to copy output, Ctrl+Enter to format, and Tab for indentation in the input area. All shortcuts work with Cmd on Mac.</div>
+            </details>
+        </div>
+
+        <h3>How to Use JSONCraft</h3>
+        <p>Paste your raw JSON into the input panel on the left. Use the toolbar buttons to format, minify, validate, sort keys, flatten, or convert. Switch to Tree View in the output panel to explore nested data interactively. Copy or download the result when you're done.</p>
+
+        <h3>Who Uses JSONCraft?</h3>
+        <p>Web developers debugging API responses, DevOps engineers working with configuration files, data analysts cleaning datasets, QA testers validating payloads, and anyone who works with JSON data daily. JSONCraft is designed to be the fastest tool in your bookmark bar.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- BOTTOM AD                                  -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="ad-wrapper">
+        <div class="ad-slot ad-leaderboard">
+            <!-- ═══ ADSENSE SLOT 4: Bottom Leaderboard 728×90 ═══ -->
+            <!-- Replace this with your AdSense ad unit code -->
+            Ad Space — 728×90 Bottom Leaderboard
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- ABOUT PAGE                                 -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="page-content" id="aboutPage">
+        <h1>About JSONCraft</h1>
+        <p>JSONCraft is a free online JSON editor, formatter, and validator built for developers who value speed, privacy, and simplicity.</p>
+        <h2>Our Mission</h2>
+        <p>We believe developer tools should be fast, free, and respectful of your data. JSONCraft processes everything in your browser — no data ever leaves your device. We sustain this free tool through non-intrusive advertising.</p>
+        <h2>Features</h2>
+        <p>JSONCraft includes JSON formatting/beautifying, minification, validation with error pinpointing, interactive tree view, key sorting, JSON flattening, JSON escaping/unescaping, JSON to CSV conversion, JSON to YAML conversion, file upload, file download, dark/light theme, and keyboard shortcuts.</p>
+        <h2>Contact</h2>
+        <p>Have feedback, bug reports, or feature requests? Email us at <strong>hello@jsoncraft.dev</strong> (replace with your email).</p>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- PRIVACY POLICY PAGE                        -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="page-content" id="privacyPage">
+        <h1>Privacy Policy</h1>
+        <p><em>Last updated: March 2026</em></p>
+
+        <h2>Overview</h2>
+        <p>JSONCraft ("we", "us", "our") operates the jsoncraft.dev website. This page informs you of our policies regarding the collection, use, and disclosure of information when you use our website.</p>
+
+        <h2>Data Processing</h2>
+        <p>All JSON data you input into JSONCraft is processed entirely within your web browser using client-side JavaScript. Your JSON data is never transmitted to our servers or any third-party servers. We do not store, log, or have access to any JSON data you process using our tools.</p>
+
+        <h2>Information We Collect</h2>
+        <p>We do not collect personal information directly. However, our advertising partners and analytics providers may collect certain information automatically, including:</p>
+        <ul>
+            <li>IP address (anonymized where possible)</li>
+            <li>Browser type and version</li>
+            <li>Pages visited and time spent</li>
+            <li>Referring website</li>
+            <li>Device type</li>
+        </ul>
+
+        <h2>Advertising</h2>
+        <p>We use Google AdSense to display advertisements. Google may use cookies and similar technologies to serve ads based on your prior visits to our website or other websites. You can opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google's Ad Settings</a>.</p>
+
+        <h2>Cookies</h2>
+        <p>We use cookies only for: storing your theme preference (dark/light mode) and through third-party advertising services (Google AdSense). You can disable cookies in your browser settings.</p>
+
+        <h2>Third-Party Services</h2>
+        <p>We use Google AdSense for advertising and may use Google Analytics for understanding site traffic. These services have their own privacy policies.</p>
+
+        <h2>Children's Privacy</h2>
+        <p>Our website is not intended for children under 13. We do not knowingly collect personal information from children.</p>
+
+        <h2>Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page with an updated "last updated" date.</p>
+
+        <h2>Contact</h2>
+        <p>If you have any questions about this Privacy Policy, contact us at <strong>hello@jsoncraft.dev</strong> (replace with your email).</p>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- FOOTER                                     -->
+    <!-- ══════════════════════════════════════════ -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <span class="footer-copy">&copy; 2026 JSONCraft. Free forever.</span>
+            <div class="footer-links">
+                <a onclick="showPage('about')">About</a>
+                <a onclick="showPage('privacy')">Privacy Policy</a>
+                <a href="mailto:hello@jsoncraft.dev">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- JAVASCRIPT                                 -->
+    <!-- ══════════════════════════════════════════ -->
+    <script>
+    // ── DOM Elements ────────────────────────────
+    const $input = document.getElementById('inputArea');
+    const $output = document.getElementById('outputArea');
+    const $treeView = document.getElementById('treeView');
+    const $statusPill = document.getElementById('statusPill');
+    const $errorBar = document.getElementById('errorBar');
+    const $errorText = document.getElementById('errorText');
+    const $indentSize = document.getElementById('indentSize');
+
+    let currentView = 'code';
+    let lastParsed = null;
+
+    // ── Utilities ───────────────────────────────
+    function getIndent() {
+        const v = $indentSize.value;
+        return v === 'tab' ? '\t' : parseInt(v);
+    }
+
+    function byteSize(str) {
+        return new Blob([str]).size;
+    }
+
+    function updateStats() {
+        const iv = $input.value;
+        const ov = $output.value;
+        document.getElementById('inputStats').textContent =
+            `${iv.length.toLocaleString()} chars · ${iv ? iv.split('\n').length : 0} lines · ${byteSize(iv).toLocaleString()} bytes`;
+        document.getElementById('outputStats').textContent =
+            `${ov.length.toLocaleString()} chars · ${ov ? ov.split('\n').length : 0} lines · ${byteSize(ov).toLocaleString()} bytes`;
+    }
+
+    function setStatus(type, text) {
+        $statusPill.className = 'status-pill ' + type;
+        $statusPill.textContent = text;
+    }
+
+    function clearStatus() {
+        $statusPill.className = 'status-pill';
+        $errorBar.className = 'error-bar';
+    }
+
+    function showError(msg) {
+        $errorText.textContent = msg;
+        $errorBar.className = 'error-bar show';
+        setStatus('invalid', 'INVALID');
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function tryParse(str) {
+        const trimmed = str.trim();
+        if (!trimmed) return { ok: false, error: 'Empty input' };
+        const t0 = performance.now();
+        try {
+            const data = JSON.parse(trimmed);
+            const ms = (performance.now() - t0).toFixed(1);
+            document.getElementById('parseTime').textContent = `Parsed in ${ms}ms`;
+            return { ok: true, data, ms };
+        } catch (e) {
+            return { ok: false, error: e.message };
+        }
+    }
+
+    // ── Core Actions ────────────────────────────
+    function formatJSON() {
+        clearStatus();
+        const result = tryParse($input.value);
+        if (!result.ok) { showError(result.error); $output.value = ''; updateStats(); return; }
+        lastParsed = result.data;
+        $output.value = JSON.stringify(result.data, null, getIndent());
+        setStatus('valid', 'VALID');
+        if (currentView === 'tree') renderTree(result.data);
+        updateStats();
+    }
+
+    function minifyJSON() {
+        clearStatus();
+        const result = tryParse($input.value);
+        if (!result.ok) { showError(result.error); $output.value = ''; updateStats(); return; }
+        lastParsed = result.data;
+        $output.value = JSON.stringify(result.data);
+        setStatus('valid', 'VALID');
+        updateStats();
+    }
+
+    function validateJSON() {
+        clearStatus();
+        const raw = $input.value.trim();
+        if (!raw) { showError('Input is empty — paste some JSON first.'); return; }
+        const result = tryParse(raw);
+        if (result.ok) {
+            setStatus('valid', 'VALID');
+            showToast('✓ Valid JSON');
+        } else {
+            showError(result.error);
+        }
+    }
+
+    function sortKeys() {
+        clearStatus();
+        const result = tryParse($input.value);
+        if (!result.ok) { showError(result.error); return; }
+
+        function sortObj(obj) {
+            if (Array.isArray(obj)) return obj.map(sortObj);
+            if (obj !== null && typeof obj === 'object') {
+                return Object.keys(obj).sort().reduce((acc, key) => {
+                    acc[key] = sortObj(obj[key]);
+                    return acc;
+                }, {});
+            }
+            return obj;
+        }
+
+        const sorted = sortObj(result.data);
+        lastParsed = sorted;
+        $output.value = JSON.stringify(sorted, null, getIndent());
+        setStatus('valid', 'VALID');
+        showToast('↕ Keys sorted A→Z');
+        updateStats();
+    }
+
+    function flattenJSON() {
+        clearStatus();
+        const result = tryParse($input.value);
+        if (!result.ok) { showError(result.error); return; }
+
+        function flatten(obj, prefix = '', out = {}) {
+            for (const key in obj) {
+                const path = prefix ? `${prefix}.${key}` : key;
+                if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+                    flatten(obj[key], path, out);
+                } else {
+                    out[path] = obj[key];
+                }
+            }
+            return out;
+        }
+
+        const flat = flatten(result.data);
+        lastParsed = flat;
+        $output.value = JSON.stringify(flat, null, getIndent());
+        setStatus('valid', 'VALID');
+        showToast('⊟ JSON flattened');
+        updateStats();
+    }
+
+    function escapeJSON() {
+        const raw = $input.value;
+        if (!raw.trim()) return;
+        $output.value = JSON.stringify(raw);
+        showToast('\\ Escaped');
+        updateStats();
+    }
+
+    function unescapeJSON() {
+        const raw = $input.value.trim();
+        if (!raw) return;
+        try {
+            $output.value = JSON.parse(raw);
+            showToast('" Unescaped');
+        } catch (e) {
+            showError('Cannot unescape: ' + e.message);
+        }
+        updateStats();
+    }
+
+    function jsonToCSV() {
+        clearStatus();
+        const result = tryParse($input.value);
+        if (!result.ok) { showError(result.error); return; }
+        const data = Array.isArray(result.data) ? result.data : [result.data];
+        if (data.length === 0 || typeof data[0] !== 'object') {
+            showError('JSON must be an array of objects to convert to CSV.');
+            return;
+        }
+        const headers = [...new Set(data.flatMap(Object.keys))];
+        const csvRows = [headers.join(',')];
+        data.forEach(row => {
+            csvRows.push(headers.map(h => {
+                const val = row[h];
+                if (val === null || val === undefined) return '';
+                const str = String(val);
+                return str.includes(',') || str.includes('"') || str.includes('\n')
+                    ? `"${str.replace(/"/g, '""')}"` : str;
+            }).join(','));
+        });
+        $output.value = csvRows.join('\n');
+        showToast('📊 Converted to CSV');
+        updateStats();
+    }
+
+    function jsonToYAML() {
+        clearStatus();
+        const result = tryParse($input.value);
+        if (!result.ok) { showError(result.error); return; }
+
+        function toYAML(obj, indent = 0) {
+            const pad = '  '.repeat(indent);
+            let out = '';
+            if (Array.isArray(obj)) {
+                obj.forEach(item => {
+                    if (typeof item === 'object' && item !== null) {
+                        out += `${pad}- \n${toYAML(item, indent + 1)}`;
+                    } else {
+                        out += `${pad}- ${yamlValue(item)}\n`;
+                    }
+                });
+            } else if (typeof obj === 'object' && obj !== null) {
+                for (const key in obj) {
+                    const val = obj[key];
+                    if (typeof val === 'object' && val !== null) {
+                        out += `${pad}${key}:\n${toYAML(val, indent + 1)}`;
+                    } else {
+                        out += `${pad}${key}: ${yamlValue(val)}\n`;
+                    }
+                }
+            }
+            return out;
+        }
+
+        function yamlValue(v) {
+            if (v === null) return 'null';
+            if (typeof v === 'string') {
+                if (v === '' || v.includes(':') || v.includes('#') || v.includes('\n') || v.startsWith(' ')) {
+                    return `"${v.replace(/"/g, '\\"')}"`;
+                }
+                return v;
+            }
+            return String(v);
+        }
+
+        $output.value = toYAML(result.data);
+        showToast('📄 Converted to YAML');
+        updateStats();
+    }
+
+    function copyOutput() {
+        const text = $output.value;
+        if (!text) { showToast('Nothing to copy'); return; }
+        navigator.clipboard.writeText(text).then(() => showToast('📋 Copied!')).catch(() => {
+            $output.select();
+            document.execCommand('copy');
+            showToast('📋 Copied!');
+        });
+    }
+
+    function downloadJSON() {
+        const text = $output.value || $input.value;
+        if (!text.trim()) { showToast('Nothing to download'); return; }
+        const blob = new Blob([text], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('💾 Downloaded');
+    }
+
+    function clearAll() {
+        $input.value = '';
+        $output.value = '';
+        $treeView.innerHTML = '';
+        lastParsed = null;
+        clearStatus();
+        updateStats();
+        document.getElementById('parseTime').textContent = '';
+    }
+
+    function autoFormat() {
+        if ($input.value.trim()) formatJSON();
+    }
+
+    function loadSample() {
+        $input.value = JSON.stringify({
+            "name": "JSONCraft",
+            "version": "1.0.0",
+            "description": "Free online JSON editor",
+            "features": ["format", "validate", "minify", "tree-view", "convert"],
+            "author": {
+                "name": "Developer",
+                "email": "dev@jsoncraft.dev",
+                "location": {
+                    "city": "Bangalore",
+                    "country": "India"
+                }
+            },
+            "stats": {
+                "daily_users": 15000,
+                "uptime": 99.9,
+                "is_free": true
+            },
+            "supported_conversions": [
+                {"from": "JSON", "to": "CSV"},
+                {"from": "JSON", "to": "YAML"}
+            ],
+            "tags": ["developer-tools", "json", "formatter", "open-source"],
+            "license": "MIT",
+            "last_updated": "2026-03-17"
+        }, null, 2);
+        formatJSON();
+        showToast('📋 Sample loaded');
+    }
+
+    // ── Tree View ───────────────────────────────
+    function switchView(view) {
+        currentView = view;
+        document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+        $output.style.display = view === 'code' ? '' : 'none';
+        $treeView.style.display = view === 'tree' ? '' : 'none';
+        if (view === 'tree' && lastParsed) renderTree(lastParsed);
+    }
+
+    function renderTree(data) {
+        $treeView.innerHTML = buildTreeHTML(data, '', true);
+    }
+
+    function buildTreeHTML(data, path, expanded) {
+        if (data === null) return `<span class="tree-null">null</span>`;
+        if (typeof data === 'string') return `<span class="tree-string">"${escapeHtml(data)}"</span>`;
+        if (typeof data === 'number') return `<span class="tree-number">${data}</span>`;
+        if (typeof data === 'boolean') return `<span class="tree-boolean">${data}</span>`;
+
+        const isArray = Array.isArray(data);
+        const entries = isArray ? data.map((v, i) => [i, v]) : Object.entries(data);
+        const id = 'node_' + Math.random().toString(36).slice(2, 9);
+        const bracket = isArray ? ['[', ']'] : ['{', '}'];
+        const count = entries.length;
+
+        let html = `<span class="tree-toggle" onclick="toggleTreeNode('${id}')">▶</span>`;
+        html += `<span class="tree-bracket">${bracket[0]}</span>`;
+        html += `<span style="color:var(--text-3);font-size:0.72rem;margin-left:4px">${count} item${count !== 1 ? 's' : ''}</span>`;
+        html += `<div class="tree-children${expanded ? '' : ' tree-collapsed'}" id="${id}">`;
+        entries.forEach(([key, val]) => {
+            html += `<div class="tree-node">`;
+            if (!isArray) html += `<span class="tree-key">"${escapeHtml(String(key))}"</span>: `;
+            else html += `<span style="color:var(--text-3)">${key}: </span>`;
+            html += buildTreeHTML(val, path + '.' + key, false);
+            html += `</div>`;
+        });
+        html += `</div><span class="tree-bracket">${bracket[1]}</span>`;
+        return html;
+    }
+
+    function toggleTreeNode(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('tree-collapsed');
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ── File Upload ─────────────────────────────
+    function handleFileUpload() { document.getElementById('fileInput').click(); }
+    function onFileSelected(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            $input.value = ev.target.result;
+            formatJSON();
+            showToast('📂 File loaded: ' + file.name);
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    }
+
+    // ── Theme ───────────────────────────────────
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.querySelector('.theme-btn');
+        if (body.dataset.theme === 'dark') {
+            body.dataset.theme = 'light';
+            btn.textContent = '☀️';
+            try { localStorage.setItem('jc-theme', 'light'); } catch(e) {}
+        } else {
+            body.dataset.theme = 'dark';
+            btn.textContent = '🌙';
+            try { localStorage.setItem('jc-theme', 'dark'); } catch(e) {}
+        }
+    }
+
+    // Restore theme
+    try {
+        const saved = localStorage.getItem('jc-theme');
+        if (saved === 'light') {
+            document.body.dataset.theme = 'light';
+            document.querySelector('.theme-btn').textContent = '☀️';
+        }
+    } catch(e) {}
+
+    // ── Page Navigation ─────────────────────────
+    function showPage(page) {
+        // Hide/show sections
+        const editorEls = [document.getElementById('editorSection'), document.getElementById('mainToolbar'), document.getElementById('editorLayout'), document.getElementById('seoContent')];
+        const aboutPage = document.getElementById('aboutPage');
+        const privacyPage = document.getElementById('privacyPage');
+
+        editorEls.forEach(el => el.style.display = page === 'editor' ? '' : 'none');
+        aboutPage.className = page === 'about' ? 'page-content active' : 'page-content';
+        privacyPage.className = page === 'privacy' ? 'page-content active' : 'page-content';
+
+        document.querySelectorAll('.nav-link[data-page]').forEach(l => {
+            l.classList.toggle('active', l.dataset.page === page);
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── Keyboard Shortcuts ──────────────────────
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'F') {
+            e.preventDefault(); formatJSON();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+            e.preventDefault(); copyOutput();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault(); formatJSON();
+        }
+    });
+
+    // Tab in input
+    $input.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const s = $input.selectionStart;
+            const end = $input.selectionEnd;
+            $input.value = $input.value.substring(0, s) + '  ' + $input.value.substring(end);
+            $input.selectionStart = $input.selectionEnd = s + 2;
+        }
+    });
+
+    // Auto-format on paste
+    $input.addEventListener('paste', () => setTimeout(formatJSON, 60));
+
+    // Live stats
+    $input.addEventListener('input', updateStats);
+
+    // Init
+    updateStats();
+    </script>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- STRUCTURED DATA (SEO)                      -->
+    <!-- ══════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "JSONCraft — Online JSON Editor",
+        "description": "Free online JSON editor with formatting, validation, tree view, minification, and conversion to CSV/YAML.",
+        "url": "https://jsoncraft.dev",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "browserRequirements": "Requires JavaScript",
+        "featureList": "JSON Format, Validate, Minify, Tree View, Sort Keys, Flatten, Escape, CSV Convert, YAML Convert"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is a JSON editor?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "A JSON editor is a tool that lets you view, edit, format, and validate JSON data. JSONCraft offers tree view, key sorting, flattening, and format conversion — all in one place."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is my data safe when using JSONCraft?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. All processing happens entirely in your browser. Your JSON data is never sent to any server."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I convert JSON to CSV?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes! If your JSON is an array of objects, JSONCraft can convert it to CSV format."
+                }
+            }
+        ]
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Netlify configuration file
+# Drop the jsoncraft folder onto Netlify to deploy!
+
+[build]
+  publish = "."
+
+# Security & Performance Headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+# Redirect www to non-www
+[[redirects]]
+  from = "https://www.jsoncraft.dev/*"
+  to = "https://jsoncraft.dev/:splat"
+  status = 301
+  force = true
